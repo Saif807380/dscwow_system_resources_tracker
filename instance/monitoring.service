@@ -1,0 +1,9 @@
+[Unit]
+Description=Service to start remote monitoring server
+
+[Service]
+Type=simple
+ExecStart=/bin/bash ~/instance/start.sh
+
+[Install]
+WantedBy=multi-user.target
