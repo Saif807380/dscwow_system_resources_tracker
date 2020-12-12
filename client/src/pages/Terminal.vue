@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div id="terminal-container" style="width: 50%;" class="p-my-5 p-mx-auto p-shadow-5"></div>
+    <div
+      id="terminal-container"
+      style="width: 50%"
+      class="p-my-5 p-mx-auto p-shadow-5"
+    ></div>
   </div>
 </template>
 
@@ -14,7 +18,7 @@ import { WebLinksAddon } from "xterm-addon-web-links";
 // import { TerminalUI } from "../TerminalUI";
 
 const terminal = new Terminal({
-  rows: 25
+  rows: 25,
 });
 
 const fitAddon = new FitAddon();
@@ -33,12 +37,17 @@ export default {
   data() {
     return {
       socket: null,
+      instance: null,
     };
   },
   created() {
-    this.socket = io.connect("http://localhost:8000",{
-      withCredentials:true
-    });
+    if (localStorage.getItem("instance"))
+      this.instance = JSON.parse(localStorage.getItem("instance"));
+    else this.instance = this.$store.getters["instance/getInstance"];
+    console.log(`INSTANCE: ${this.instance}`);
+    console.log(this.instance);
+    console.log(this.instance.publicIp);
+    this.socket = io.connect(this.instance.publicIp);
   },
   mounted() {
     console.log("entered");
@@ -53,7 +62,9 @@ export default {
     });
   },
   beforeUnmount() {
-    terminal.dispose();
+    console.log("COMPONENT UNMOUNTED!");
+    terminal.reset();
+    //terminal.dispose();
     this.socket.close();
   },
 };

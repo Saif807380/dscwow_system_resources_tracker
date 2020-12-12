@@ -1,6 +1,5 @@
 <template>
   <div class="p-mt-5">
-    
     <Dialog v-model:visible="isModalVisible">
       <template #header>
         <h3>Create a new instance</h3>
@@ -12,7 +11,11 @@
         <input v-model="name" placeholder="Instance Name" /><br />
         <label for="provider">Provider:</label
         ><br />
-        <Dropdown v-model="provider" :options="providerOptions" placeholder="Select a Provider" />
+        <Dropdown
+          v-model="provider"
+          :options="providerOptions"
+          placeholder="Select a Provider"
+        />
         <label for="cluster">Cluster:</label
         ><br />
         <input v-model="cluster" placeholder="Cluster" /><br />
@@ -50,14 +53,17 @@
     <DataView :value="instances" :layout="layout" :paginator="true" :rows="9">
       <template #header>
         <div class="p-grid p-nogutter">
-          
           <div class="p-col-6" style="text-align: left">
             <DataViewLayoutOptions v-model="layout" />
           </div>
           <div class="p-col-6" style="text-align: right">
-            <Button label="Add Instance" @click="showModal(false, null)" icon="pi pi-pencil" iconPos="left"></Button>
+            <Button
+              label="Add Instance"
+              @click="showModal(false, null)"
+              icon="pi pi-pencil"
+              iconPos="left"
+            ></Button>
           </div>
-          
         </div>
       </template>
 
@@ -79,7 +85,7 @@
               <div class="p-my-1">Cluster: {{ slotProps.data.cluster }}</div>
               <div class="p-my-1">Public IP: {{ slotProps.data.publicIp }}</div>
             </div>
-            <div class="p-col-4" style="text-align: center;">
+            <div class="p-col-4" style="text-align: center">
               <Button
                 class="p-mr-2 p-button-warning"
                 label="Edit"
@@ -99,7 +105,7 @@
                 label="Terminal"
                 icon="pi pi-dollar"
                 iconPos="left"
-                @click="$router.push('/terminal/' + slotProps.data._id)"
+                @click="clickHandler(slotProps.data)"
               ></Button>
             </div>
           </div>
@@ -141,7 +147,7 @@
                 label="Terminal"
                 icon="pi pi-dollar"
                 iconPos="left"
-                @click="$router.push('/terminal/' + slotProps.data._id)"
+                @click="clickHandler(slotProps.data)"
               ></Button>
             </div>
           </div>
@@ -166,18 +172,17 @@ export default {
       publicIp: "",
       isEdit: false,
       instanceId: "",
-      cpu:50,
-      memory:50,
-      storage:50,
-      providerOptions: [
-        'google',
-        'aws',
-        'oracle',
-        'local'
-      ]
+      cpu: 50,
+      memory: 50,
+      storage: 50,
+      providerOptions: ["google", "aws", "oracle", "local"],
     };
   },
   methods: {
+    clickHandler(s) {
+      localStorage.setItem("instance", JSON.stringify(s));
+      this.$router.push("/terminal/" + s._id);
+    },
     getImgUrl(provider) {
       var images = require.context("../assets/", false, /\.png$/);
       return images("./" + provider + ".png");
@@ -217,10 +222,10 @@ export default {
       this.$store.commit("user/setInstances", { instances });
       this.instances = this.$store.getters["user/getInstances"];
       (this.name = ""),
-      (this.provider = ""),
-      (this.cluster = ""),
-      (this.publicIp = ""),
-      (this.isModalVisible = false);
+        (this.provider = ""),
+        (this.cluster = ""),
+        (this.publicIp = ""),
+        (this.isModalVisible = false);
     },
     async editInstance() {
       const { name, provider, cluster, publicIp } = this;
@@ -240,9 +245,7 @@ export default {
     async deleteInstance(instanceId) {
       await Api.deleteInstance(instanceId, this.$store.getters["user/getId"]);
       this.instances.splice(
-        this.instances.findIndex(
-          (instance) => instance._id === instanceId
-        ),
+        this.instances.findIndex((instance) => instance._id === instanceId),
         1
       );
       this.$store.commit("user/setInstances", { instances: this.instances });

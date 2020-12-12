@@ -5,6 +5,8 @@ const socketIO = require("socket.io");
 const PTYService = require("./PTYService");
 const { cpu, drive, mem, os, proc } = require("node-os-utils");
 const psList = require("ps-list");
+const settings = require("./settings.json");
+let lastAlertSent = 0;
 
 const Logs = {};
 
@@ -44,9 +46,9 @@ const logMetrics = async (s) => {
     })
     .then((metrics) => {
       let d = new Date();
-      if (!Logs[d.getHours()] || Logs[d.getHours()].day !== d.getDay())
-        Logs[d.getHours()] = { metrics: [], day: d.getDay() };
-      Logs[d.getHours()].metrics.push(metrics);
+      if (!Logs[d.getUTCHours()] || Logs[d.getUTCHours()].day !== d.getDay())
+        Logs[d.getUTCHours()] = { metrics: [], day: d.getDay() };
+      Logs[d.getUTCHours()].metrics.push(metrics);
     })
     .catch((err) => console.log(err));
 };
@@ -153,6 +155,7 @@ class SocketService {
             delete elem.ppid;
             delete elem.uid;
           });
+          console.log(info.slice(0, 10));
           s.emit("processList", sortedCpu.slice(0, 10));
         })
         .catch(() => s.emit("processList", []));
