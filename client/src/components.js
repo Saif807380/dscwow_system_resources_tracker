@@ -9,6 +9,7 @@ import Dialog from "primevue/dialog";
 import TabMenu from "primevue/tabmenu";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import Dropdown from 'primevue/dropdown';
 
 export default {
   InputText,
@@ -22,4 +23,5 @@ export default {
   TabMenu,
   DataTable,
   Column,
+  Dropdown,
 };

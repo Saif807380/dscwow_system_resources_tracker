@@ -27,6 +27,9 @@ export default {
   created() {
     this.getItems();
   },
+  beforeUpdate() {
+    this.getItems();
+  }
 };
 </script>
 <style>

@@ -13,6 +13,8 @@
         style="width: 80%"
       >
         <Chart type="line" :options="graphOptions" :data="cpuData" ref="cpu" />
+        <h1 class="p-mt-5">Data for the last 24 hours</h1>
+        <Chart type="line" :options="graphOptions" :data="cpuDayData" ref="cpuDay" />
       </div>
       <div
         v-show="selectedMetric === 'RAM'"
@@ -35,8 +37,8 @@
       >
         <DataTable :value="processes">
           <Column field="pid" header="PID"></Column>
-          <Column field="cpu" header="CPU Usage"></Column>
-          <Column field="memory" header="Memory Usage"></Column>
+          <Column field="cpu" header="CPU Usage (%)"></Column>
+          <Column field="memory" header="Memory Usage (%)"></Column>
           <Column field="name" header="Process Name"></Column>
         </DataTable>
       </div>
@@ -99,6 +101,17 @@ export default {
             data: [],
             fill: false,
             borderColor: "#42A5F5",
+          },
+        ],
+      },
+      cpuDayData: {
+        labels: [],
+        datasets: [
+          {
+            label: "CPU Usage",
+            data: [],
+            fill: false,
+            borderColor: "#66BB6A",
           },
         ],
       },
@@ -174,8 +187,11 @@ export default {
     if (localStorage.getItem("instance"))
       this.instance = JSON.parse(localStorage.getItem("instance"));
     else this.instance = this.$store.getters["instance/getInstance"];
-    this.socket = io.connect("http://localhost:8000");
+    console.log(this.instance);
+    console.log(this.instance.publicIp);
+    this.socket = io.connect(this.instance.publicIp);
     this.socket.on("connect", () => {
+      console.log("inside on connect");
       this.status = "online";
     });
     this.socket.on("connect_error", (err) => {
@@ -189,10 +205,27 @@ export default {
     this.socket.on("logs", (data) => {
       let d = new Date();
       this.systemInfo = data.systemInfo;
+      console.log(data.logs);
       let temp = [];
+      for(var key in data.logs){
+        console.log(key);
+        
+        var sum = data.logs[key].metrics.reduce((a,b)=>{
+          return{ cpu:{usage:a.cpu.usage + b.cpu.usage}};
+        },{cpu:{usage:0}});
+        sum.cpu.usage /= data.logs[key].metrics.length;
+        temp.push(sum);
+      }
+      temp = temp.map((e)=> {
+        return e.cpu.usage;
+      });
+      console.log(temp);
+      this.$refs.cpuDay.data.datasets[0].data = temp;
+      this.$refs.cpuDay.data.labels = [...Array(24).keys()];
+      temp = []
       for (
         var i = data.logs[d.getHours()].metrics.length - 1;
-        i > Math.max(data.logs[d.getHours()].metrics.length - 30, 0);
+        i >= Math.max(data.logs[d.getHours()].metrics.length - 30, 0);
         i--
       ) {
         temp.push(data.logs[d.getHours()].metrics[i].cpu.usage);
@@ -229,7 +262,6 @@ export default {
     getData() {
       this.status = "online";
       this.socket.on("metrics", (data) => {
-        console.log(data);
         // cpu
         this.newData(this.$refs.cpu.data.datasets[0].data, data.cpu.usage);
         this.$refs.cpu.data.labels = [
@@ -257,6 +289,7 @@ export default {
         this.$refs.cpu.refresh();
         this.$refs.ram.refresh();
         this.$refs.storage.refresh();
+        this.$refs.cpuDay.refresh();
       });
       this.socket.on("processList", (data) => {
         this.processes = data;

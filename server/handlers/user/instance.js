@@ -13,6 +13,7 @@ export const getInstances = async function (req, res, next) {
 
 export const createInstance = async function (req, res, next) {
   try {
+    console.log(req.body.data);
     let instances = (
       await db.User.findByIdAndUpdate(
         req.body.decoded.id,

@@ -1,8 +1,6 @@
 <template>
   <div class="p-mt-5">
-    <button type="button" class="btn" @click="showModal(false, null)">
-      Add Instance
-    </button>
+    
     <Dialog v-model:visible="isModalVisible">
       <template #header>
         <h3>Create a new instance</h3>
@@ -14,13 +12,22 @@
         <input v-model="name" placeholder="Instance Name" /><br />
         <label for="provider">Provider:</label
         ><br />
-        <input v-model="provider" placeholder="Provider" /><br />
+        <Dropdown v-model="provider" :options="providerOptions" placeholder="Select a Provider" />
         <label for="cluster">Cluster:</label
         ><br />
         <input v-model="cluster" placeholder="Cluster" /><br />
-        <label for="publicIP">Public IP:</label
+        <label for="publicIp">Public IP:</label
         ><br />
-        <input v-model="publicIP" placeholder="Public IP" /><br />
+        <input v-model="publicIp" placeholder="Public IP" /><br />
+        <label for="cpu">CPU:</label
+        ><br />
+        <input v-model="cpu" placeholder="Usage %" /><br />
+        <label for="memory">Memory:</label
+        ><br />
+        <input v-model="memory" placeholder="Usage %" /><br />
+        <label for="storage">Storage:</label
+        ><br />
+        <input v-model="storage" placeholder="Usage %" /><br />
       </ul>
 
       <template #footer>
@@ -43,9 +50,14 @@
     <DataView :value="instances" :layout="layout" :paginator="true" :rows="9">
       <template #header>
         <div class="p-grid p-nogutter">
-          <div class="p-col-6" style="text-align: right">
+          
+          <div class="p-col-6" style="text-align: left">
             <DataViewLayoutOptions v-model="layout" />
           </div>
+          <div class="p-col-6" style="text-align: right">
+            <Button label="Add Instance" @click="showModal(false, null)" icon="pi pi-pencil" iconPos="left"></Button>
+          </div>
+          
         </div>
       </template>
 
@@ -61,13 +73,13 @@
               />
             </div>
 
-            <div class="p-col-5 p-ml-1" style="text-align: left">
+            <div class="p-col-4 p-ml-1" style="text-align: left">
               <div class="p-my-1">Name: {{ slotProps.data.name }}</div>
               <div class="p-my-1">Provider: {{ slotProps.data.provider }}</div>
               <div class="p-my-1">Cluster: {{ slotProps.data.cluster }}</div>
               <div class="p-my-1">Public IP: {{ slotProps.data.publicIp }}</div>
             </div>
-            <div class="p-col-3">
+            <div class="p-col-4" style="text-align: center;">
               <Button
                 class="p-mr-2 p-button-warning"
                 label="Edit"
@@ -83,9 +95,9 @@
                 @click="deleteInstance(slotProps.data._id)"
               ></Button>
               <Button
-                class="p-ml-2 p-button-warning"
+                class="p-ml-2"
                 label="Terminal"
-                icon="pi pi-pencil"
+                icon="pi pi-dollar"
                 iconPos="left"
                 @click="$router.push('/terminal/' + slotProps.data._id)"
               ></Button>
@@ -109,7 +121,7 @@
               <div class="p-mb-2">Cluster: {{ slotProps.data.cluster }}</div>
               <div class="p-mb-2">Public IP: {{ slotProps.data.publicIp }}</div>
             </div>
-            <div>
+            <div class="p-mt-4">
               <Button
                 class="p-mr-2 p-button-warning"
                 label="Edit"
@@ -125,9 +137,9 @@
                 @click="deleteInstance(slotProps.data._id)"
               ></Button>
               <Button
-                class="p-ml-2 p-button-warning"
+                class="p-ml-2"
                 label="Terminal"
-                icon="pi pi-pencil"
+                icon="pi pi-dollar"
                 iconPos="left"
                 @click="$router.push('/terminal/' + slotProps.data._id)"
               ></Button>
@@ -151,9 +163,18 @@ export default {
       name: "",
       provider: "",
       cluster: "",
-      publicIP: "",
+      publicIp: "",
       isEdit: false,
       instanceId: "",
+      cpu:50,
+      memory:50,
+      storage:50,
+      providerOptions: [
+        'google',
+        'aws',
+        'oracle',
+        'local'
+      ]
     };
   },
   methods: {
@@ -166,7 +187,7 @@ export default {
         this.name = instance.name;
         this.provider = instance.provider;
         this.cluster = instance.cluster;
-        this.publicIP = instance.publicIP;
+        this.publicIp = instance.publicIp;
         this.instanceId = instance._id;
         this.isEdit = value;
       }
@@ -174,10 +195,11 @@ export default {
     },
     closeModal() {
       this.isModalVisible = false;
+      this.isEdit = false;
     },
     viewDashboard(value) {
       console.log(value);
-      let instance = this.instances.filter((instance) => {
+      let instance = this.instances.find((instance) => {
         return instance._id == value;
       });
       this.$store.commit("instance/setInstance", { instance: instance });
@@ -185,42 +207,44 @@ export default {
       this.$router.push("/dashboard/" + value);
     },
     async createInstance() {
-      const { name, provider, cluster, publicIP } = this;
+      const { name, provider, cluster, publicIp } = this;
       const response = await Api.createInstance(
-        { name, provider, cluster, publicIP },
+        { name, provider, cluster, publicIp },
         this.$store.getters["user/getId"]
       );
       const { instances } = response.data;
+      console.log(response.data);
       this.$store.commit("user/setInstances", { instances });
       this.instances = this.$store.getters["user/getInstances"];
       (this.name = ""),
-        (this.provider = ""),
-        (this.cluster = ""),
-        (this.publicIP = ""),
-        (this.isModalVisible = false);
+      (this.provider = ""),
+      (this.cluster = ""),
+      (this.publicIp = ""),
+      (this.isModalVisible = false);
     },
     async editInstance() {
-      const { name, provider, cluster, publicIP } = this;
-      // console.log({ name, provider, cluster, publicIP });
+      const { name, provider, cluster, publicIp } = this;
+      console.log({ name, provider, cluster, publicIp });
       await Api.editInstance(
         this.instanceId,
-        { name, provider, cluster, publicIP },
+        { name, provider, cluster, publicIp },
         this.$store.getters["user/getId"]
       );
       const res = await Api.getInstances(this.$store.getters["user/getId"]);
       this.instances = res.data.instances;
+      console.log(this.instances);
       this.$store.commit("user/setInstances", { instances: this.instances });
       this.isModalVisible = false;
+      this.isEdit = false;
     },
     async deleteInstance(instanceId) {
       await Api.deleteInstance(instanceId, this.$store.getters["user/getId"]);
-      this.instances = this.$store.getters["user/getInstances"].splice(
-        this.$store.getters["user/getInstances"].findIndex(
+      this.instances.splice(
+        this.instances.findIndex(
           (instance) => instance._id === instanceId
         ),
         1
       );
-      console.log(this.instances);
       this.$store.commit("user/setInstances", { instances: this.instances });
     },
   },

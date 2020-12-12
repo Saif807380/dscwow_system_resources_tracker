@@ -152,7 +152,7 @@ class SocketService {
 
     const io = socketIO(server, {
       cors: {
-        origin: "http://localhost:8080",
+        origin: "*",
         credentials: true,
       },
     });

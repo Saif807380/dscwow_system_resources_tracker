@@ -24,9 +24,21 @@ const userSchema = new mongoose.Schema(
         name: String,
         provider: String,
         cluster: String,
-        publcIP: String,
+        publicIp: String,
+        cpu:{
+          type:Number,
+          default:50
+        },
+        memory:{
+          type:Number,
+          default:50
+        },
+        storage:{
+          type:Number,
+          default:50
+        },
       },
-    ],
+    ]
   },
   { timestamps: true }
 );

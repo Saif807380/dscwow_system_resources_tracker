@@ -2,14 +2,14 @@
   <div class="p-mt-5">
     <Card style="width: 50%" class="p-mx-auto">
       <template #content>
-        <div style="text-align: left">
+        <div style="text-align: center">
           <div class="p-field">
             <InputText
               id="email"
               type="email"
               v-model="email"
               placeholder="Email"
-              class="p-inputtext-lg"
+              class="p-inputtext-lg p-col-6"
             />
             <small id="username2-help" class="p-invalid">{{
               emailError
@@ -21,7 +21,7 @@
               type="password"
               v-model="password"
               placeholder="Password"
-              class="p-inputtext-lg"
+              class="p-inputtext-lg p-col-6"
             />
             <small id="username2-help" class="p-invalid">{{
               passwordError

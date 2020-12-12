@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="terminal-container" class="p-my-3"></div>
+    <div id="terminal-container" style="width: 50%;" class="p-my-5 p-mx-auto p-shadow-5"></div>
   </div>
 </template>
 
@@ -13,7 +13,9 @@ import { WebLinksAddon } from "xterm-addon-web-links";
 
 // import { TerminalUI } from "../TerminalUI";
 
-const terminal = new Terminal();
+const terminal = new Terminal({
+  rows: 25
+});
 
 const fitAddon = new FitAddon();
 
@@ -23,7 +25,7 @@ terminal.setOption("theme", {
   background: "#202B33",
   foreground: "#F5F8FA",
 });
-terminal.setOption("fontSize", 20);
+terminal.setOption("fontSize", 16);
 terminal.loadAddon(new WebLinksAddon());
 
 export default {
@@ -34,7 +36,9 @@ export default {
     };
   },
   created() {
-    this.socket = io.connect("http://localhost:8000");
+    this.socket = io.connect("http://localhost:8000",{
+      withCredentials:true
+    });
   },
   mounted() {
     console.log("entered");

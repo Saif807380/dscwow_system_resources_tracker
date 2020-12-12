@@ -2,14 +2,14 @@
   <div class="p-mt-5">
     <Card style="width: 50%" class="p-mx-auto p-px-0">
       <template #content>
-        <div style="text-align: left">
+        <div style="text-align: center">
           <div class="p-field">
             <InputText
               id="name"
               type="text"
               v-model="name"
               placeholder="Name"
-              class="p-inputtext-lg"
+              class="p-inputtext-lg p-col-6"
             />
             <small id="username2-help" class="p-invalid">{{ nameError }}</small>
           </div>
@@ -19,7 +19,7 @@
               type="email"
               v-model="email"
               placeholder="Email"
-              class="p-inputtext-lg"
+              class="p-inputtext-lg p-col-6"
             />
             <small id="username2-help" class="p-invalid">{{
               emailError
@@ -31,7 +31,7 @@
               type="text"
               v-model="contact"
               placeholder="Phone Number"
-              class="p-inputtext-lg"
+              class="p-inputtext-lg p-col-6"
             />
             <small id="username2-help" class="p-invalid">{{
               contactError
@@ -43,7 +43,7 @@
               type="password"
               v-model="password"
               placeholder="Password"
-              class="p-inputtext-lg"
+              class="p-inputtext-lg p-col-6"
             />
             <small id="username2-help" class="p-invalid">{{
               passwordError
@@ -55,7 +55,7 @@
               type="password"
               v-model="confirmPassword"
               placeholder="Confirm Password"
-              class="p-inputtext-lg"
+              class="p-inputtext-lg p-col-6"
             />
             <small id="username2-help" class="p-invalid">{{
               confirmPasswordError
