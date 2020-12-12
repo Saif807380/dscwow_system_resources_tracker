@@ -7,8 +7,16 @@ const { cpu, drive, mem, os, proc } = require("node-os-utils");
 const psList = require("ps-list");
 
 const Logs = {};
+
+const driveInfo = () => {
+  return {
+    usedGb: 2,
+    usedPercentage: 30,
+  };
+};
+
 const logMetrics = async (s) => {
-  Promise.all([cpu.usage(), drive.info(), mem.info(), os.uptime()])
+  Promise.all([cpu.usage(), driveInfo(), mem.info(), os.uptime()])
     .then((result) => {
       let metrics = {
         cpu: {

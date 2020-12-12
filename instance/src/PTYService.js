@@ -23,7 +23,7 @@ class PTY {
       cwd: process.env.HOME, // Which path should terminal start
       env: process.env, // Pass environment variables
     });
-    this.ptyProcess.write("login\r");
+    //this.ptyProcess.write("login\r");
     // Add a "data" event listener.
     this.ptyProcess.on("data", (data) => {
       // Whenever terminal generates any data, send that output to socket.io client to display on UI
