@@ -185,7 +185,7 @@ export default {
           class: null,
         },
       ],
-      selectedMetric: "CPU",
+      selectedMetric: "System Info",
     };
   },
   created() {

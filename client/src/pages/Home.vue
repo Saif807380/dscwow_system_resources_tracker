@@ -1,36 +1,38 @@
 <template>
   <div class="p-mt-5">
-    <Dialog v-model:visible="isModalVisible">
+    <Dialog v-model:visible="isModalVisible" @hide="closeModal(event)">
       <template #header>
-        <h3>Create a new instance</h3>
+        <h3 v-if="isEdit">Edit Instance</h3>
+        <h3 v-else>Create New Instance</h3>
       </template>
 
       <ul>
-        <label for="name">Instance Name:</label
-        ><br />
-        <input v-model="name" placeholder="Instance Name" /><br />
-        <label for="provider">Provider:</label
-        ><br />
-        <Dropdown
-          v-model="provider"
-          :options="providerOptions"
-          placeholder="Select a Provider"
-        />
-        <label for="cluster">Cluster:</label
-        ><br />
-        <input v-model="cluster" placeholder="Cluster" /><br />
-        <label for="publicIp">Public IP:</label
-        ><br />
-        <input v-model="publicIp" placeholder="Public IP" /><br />
-        <label for="cpu">CPU:</label
-        ><br />
-        <input v-model="cpu" placeholder="Usage %" /><br />
-        <label for="memory">Memory:</label
-        ><br />
-        <input v-model="memory" placeholder="Usage %" /><br />
-        <label for="storage">Storage:</label
-        ><br />
-        <input v-model="storage" placeholder="Usage %" /><br />
+        <div class="p-field">
+          <InputText v-model="name" placeholder="Instance Name" />
+        </div>
+        <div class="p-field">
+          <Dropdown
+            v-model="provider"
+            :options="providerOptions"
+            placeholder="Select a Provider"
+            optionLabel="name"
+          />
+        </div>
+        <div class="p-field">
+          <InputText v-model="cluster" placeholder="Cluster" />
+        </div>
+        <div class="p-field">
+          <InputText v-model="publicIp" placeholder="Public IP" />
+        </div>
+        <div class="p-field">
+          <InputText v-model="cpu" placeholder="Usage %" />
+        </div>
+        <div class="p-field">
+          <InputText v-model="memory" placeholder="Usage %" />
+        </div>
+        <div class="p-field">
+          <InputText v-model="storage" placeholder="Usage %" />
+        </div>
       </ul>
 
       <template #footer>
@@ -175,7 +177,13 @@ export default {
       cpu: 50,
       memory: 50,
       storage: 50,
-      providerOptions: ["google", "aws", "oracle", "local"],
+      providerOptions: [
+        {name: "Google", value: "google"}, 
+        {name: "AWS", value: "aws" }, 
+        { name: "Oracle", value: "oracle" }, 
+        { name: "Docker", value: "docker"},
+        { name: "Local Host", value: "local"}
+      ],
     };
   },
   methods: {
@@ -200,6 +208,11 @@ export default {
     },
     closeModal() {
       this.isModalVisible = false;
+      (this.name = ""),
+      (this.provider = ""),
+      (this.cluster = ""),
+      (this.publicIp = ""),
+      (this.isModalVisible = false);
       this.isEdit = false;
     },
     viewDashboard(value) {
@@ -214,7 +227,12 @@ export default {
     async createInstance() {
       const { name, provider, cluster, publicIp } = this;
       const response = await Api.createInstance(
-        { name, provider, cluster, publicIp },
+        { 
+          name: name, 
+          provider: provider.value, 
+          cluster: cluster, 
+          publicIp: publicIp
+        },
         this.$store.getters["user/getId"]
       );
       const { instances } = response.data;
@@ -222,17 +240,23 @@ export default {
       this.$store.commit("user/setInstances", { instances });
       this.instances = this.$store.getters["user/getInstances"];
       (this.name = ""),
-        (this.provider = ""),
-        (this.cluster = ""),
-        (this.publicIp = ""),
-        (this.isModalVisible = false);
+      (this.provider = ""),
+      (this.cluster = ""),
+      (this.publicIp = ""),
+      this.isEdit = false;
+      (this.isModalVisible = false);
     },
     async editInstance() {
       const { name, provider, cluster, publicIp } = this;
       console.log({ name, provider, cluster, publicIp });
       await Api.editInstance(
         this.instanceId,
-        { name, provider, cluster, publicIp },
+        { 
+          name: name, 
+          provider: provider.value, 
+          cluster: cluster, 
+          publicIp: publicIp
+        },
         this.$store.getters["user/getId"]
       );
       const res = await Api.getInstances(this.$store.getters["user/getId"]);
