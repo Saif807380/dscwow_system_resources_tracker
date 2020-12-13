@@ -72,7 +72,7 @@
       <template #list="slotProps">
         <div class="p-col-9 p-mx-auto p-mt-3">
           <div class="p-shadow-2 p-mb-3 p-p-3 p-grid">
-            <div class="p-col-3" style="overflow: hidden">
+            <div class="p-col-4" style="overflow: hidden">
               <img
                 @click="viewDashboard(slotProps.data._id)"
                 :src="getImgUrl(slotProps.data.provider)"
@@ -81,11 +81,11 @@
               />
             </div>
 
-            <div class="p-col-4 p-ml-1" style="text-align: left">
-              <div class="p-my-1">Name: {{ slotProps.data.name }}</div>
-              <div class="p-my-1">Provider: {{ slotProps.data.provider }}</div>
-              <div class="p-my-1">Cluster: {{ slotProps.data.cluster }}</div>
-              <div class="p-my-1">Public IP: {{ slotProps.data.publicIp }}</div>
+            <div class="p-col-3 p-ml-1" style="text-align: left; font-size: 18px;">
+              <div class="p-my-1">Name: <span class="p-text-bold">{{ slotProps.data.name }}</span></div>
+              <div class="p-my-1">Provider: <span class="p-text-bold">{{ slotProps.data.provider }}</span></div>
+              <div class="p-my-1">Cluster: <span class="p-text-bold">{{ slotProps.data.cluster }}</span></div>
+              <div class="p-my-1">Public IP: <span class="p-text-bold">{{ slotProps.data.publicIp }}</span></div>
             </div>
             <div class="p-col-4" style="text-align: center">
               <Button
@@ -116,7 +116,7 @@
 
       <template #grid="slotProps">
         <div class="p-col-12 p-md-4 p-mt-3">
-          <div class="p-shadow-2 p-m-2 card p-py-3">
+          <div class="p-shadow-2 p-m-2 card p-py-3" style="font-size: 18px;">
             <div>
               <img
                 @click="viewDashboard(slotProps.data._id)"
@@ -124,10 +124,10 @@
                 :alt="slotProps.data.provider"
                 style="height: 150px"
               />
-              <div class="p-my-2">Name: {{ slotProps.data.name }}</div>
-              <div class="p-mb-2">Provider: {{ slotProps.data.provider }}</div>
-              <div class="p-mb-2">Cluster: {{ slotProps.data.cluster }}</div>
-              <div class="p-mb-2">Public IP: {{ slotProps.data.publicIp }}</div>
+              <div class="p-my-2">Name: <span class="p-text-bold">{{ slotProps.data.name }}</span></div>
+              <div class="p-my-2">Provider: <span class="p-text-bold">{{ slotProps.data.provider }}</span></div>
+              <div class="p-my-2">Cluster: <span class="p-text-bold">{{ slotProps.data.cluster }}</span></div>
+              <div class="p-my-2">Public IP: <span class="p-text-bold">{{ slotProps.data.publicIp }}</span></div>
             </div>
             <div class="p-mt-4">
               <Button

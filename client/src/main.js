@@ -10,8 +10,10 @@ import Components from "./components";
 import App from "./App.vue";
 import router from "./routes";
 import store from "./store";
+import ForkeMeOnGithub from 'fork-me-on-github-vue';
 
 const app = createApp(App);
+app.use(ForkeMeOnGithub);
 app.use(PrimeVue);
 app.use(store);
 app.use(router);

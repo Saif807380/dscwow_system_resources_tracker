@@ -15,13 +15,10 @@ export default {
   methods: {
     getItems() {
       this.items = [];
-      if (localStorage.getItem("token")) {
         this.items.push({ label: "Home", to: "/home" });
-        this.items.push({ label: "Logout", to: "/logout" });
-      } else {
         this.items.push({ label: "Login", to: "/login" });
         this.items.push({ label: "Register", to: "/register" });
-      }
+        this.items.push({ label: "Logout", to: "/logout" });
     },
   },
   created() {

@@ -1,18 +1,28 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Default from "./pages/Default.vue";
 import Login from "./pages/Login.vue";
 import Register from "./pages/Register.vue";
 import Home from "./pages/Home.vue";
 import Dashboard from "./pages/Dashboard.vue";
 import Terminal from "./pages/Terminal.vue";
 
+const protector = function (to, from, next) {
+  let token = localStorage.getItem("token");
+  if(token) {
+    next();
+  } else {
+    next({
+      path: "/login"
+    })
+  }
+}
+
 const routes = [
-  { path: "/", component: Default },
+  { path: "/", props: true , beforeEnter: protector},
   { path: "/login", component: Login },
   { path: "/register", component: Register },
-  { path: "/home", component: Home },
-  { path: "/dashboard/:id", component: Dashboard, props: true },
-  { path: "/terminal/:id", component: Terminal, props: true },
+  { path: "/home", component: Home , beforeEnter: protector},
+  { path: "/dashboard/:id", component: Dashboard, props: true , beforeEnter: protector},
+  { path: "/terminal/:id", component: Terminal, props: true , beforeEnter: protector},
   {
     path: "/logout",
     beforeEnter: (to, from, next) => {
@@ -20,9 +30,10 @@ const routes = [
       if (localStorage.getItem("isAuthenticated"))
         localStorage.removeItem("isAuthenticated");
       if (localStorage.getItem("token")) localStorage.removeItem("token");
-      next("/");
+      next("/login");
     },
   },
+  { path: "/:id", props: true , beforeEnter: protector},
 ];
 
 const router = createRouter({
