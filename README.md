@@ -66,11 +66,7 @@ Monitor system metrics for all cloud services from one place. View CPU or memory
 - [Instance](https://github.com/Saif807380/dscwow_system_resources_tracker/blob/main/instance/README.md)
 
 ---
-## Screenshots
 
-![]()
-
----
 ## Additional Links
 
 - [Presentation](https://docs.google.com/presentation/d/1fAGF57-XQQGrtyR06XTCDdTK276LozUCMqicX-tTdTc/edit?usp=sharing)
