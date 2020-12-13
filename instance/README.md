@@ -16,16 +16,15 @@ wget https://github.com/Saif807380/dscwow_system_resources_tracker/blob/main/ins
 3. Extract zip file to home directory and install node packages
 
 ```bash
-mkdir instance && unzip instance.zip -d ~/instance
-sudo chmod +x ~/instance/start.sh
-cd ~/instance && npm install
+sudo mkdir /usr/bin/instance && sudo unzip instance.zip -d /usr/bin/instance
+cd /usr/bin/instance && npm install
 ```
 
 4. [OPTIONAL] Copy the systemd service file and start the service
 
 ```bash
-sudo cp monitoring.service /etc/systemd/system/monitoring.service
-sudo chmod 644 /etc/systemd/system/monitoring.service
+sudo cp monitoring.service /lib/systemd/system/monitoring.service
+sudo chmod 644 /lib/systemd/system/monitoring.service
 sudo systemctl enable monitoring.service && sudo systemctl start monitoring.service
 ```
 

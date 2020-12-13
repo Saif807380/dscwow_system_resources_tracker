@@ -1,9 +1,12 @@
 [Unit]
 Description=Service to start remote monitoring server
+Documentation=https://github.com/Saif807380/dscwow_system_resources_tracker
+After=network.target
 
 [Service]
 Type=simple
-ExecStart=/bin/bash ~/instance/start.sh
+ExecStart=/usr/bin/node /usr/bin/instance/src/index.js
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
